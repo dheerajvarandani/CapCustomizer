@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from "./three/GLTFLoader.js";
 import { OrbitControls } from './three/OrbitControls.js';
 import { RGBELoader } from './three/RGBELoader.js';
-import { RectAreaLightHelper } from './three//RectAreaLightHelper.js';
+import { DecalGeometry } from './three//DecalGeometry.js';
 
 let loadingDiv = document.getElementById('loadingDiv');
 
@@ -25,8 +25,8 @@ camera.position.z = 0;
 //camera.lookAt(new THREE.Vector3(0, 1, 0));
 //controls.target.set(0,1,0);
 
-controls.enableZoom = false;
-controls.enablePan = false;
+//controls.enableZoom = false;
+//controls.enablePan = false;
 controls.enableDamping = true;
 controls.dampingFactor = 0.02;
 controls.rotateSpeed = 0.5
@@ -34,15 +34,14 @@ controls.rotateSpeed = 0.5
 
 
 
-let capScene;
-
-
+let capScene, cap;
+let a3Marker;
 let textureLoader = new THREE.TextureLoader();
-
-
 
 var clock = new THREE.Clock()
 var delta = clock.getDelta();
+
+
 
 
 
@@ -77,7 +76,7 @@ loadingManager.onLoad = function(){
 const loader = new GLTFLoader(loadingManager);
 loader.load(
 // resource URL
-'./assets/cap.glb',
+'./assets/cap.gltf',
 //'https://storage.googleapis.com/dheerajv-bucket/images/aorta.glb',
 // called when the resource is loaded
 function ( gltf ) {
@@ -85,6 +84,37 @@ function ( gltf ) {
 
     capScene = gltf.scene;
     scene.add( capScene);
+    cap = capScene.getObjectByName('cap');
+    a3Marker = capScene.getObjectByName('A3_marker');
+    a3Marker.visible = false;
+
+    const texture = textureLoader.load("./assets/logo.png")
+    texture.flipY = true;
+
+    //const geometry =  new DecalGeometry( cap, new THREE.Vector3(0,0,0), new THREE.Euler(0,0,0), new THREE.Vector3(0.2,0.2,0.2) );
+    const a3Geometry =  new DecalGeometry( cap, a3Marker.position, new THREE.Euler().setFromQuaternion(new THREE.Quaternion(0,0,0,0)), new THREE.Vector3(0.05,0.05,0.1) );
+    const a3Material = new THREE.MeshBasicMaterial( { 
+        map:texture,
+        transparent:true,
+        side: THREE.FrontSide,
+        depthTest:true,
+        depthWrite:false,
+        polygonOffset:true,
+        polygonOffsetFactor: -4 } );
+    const decal = new THREE.Mesh( a3Geometry, a3Material );
+    scene.add( decal );
+
+
+    const geometry = new THREE.BoxGeometry( 0.05,0.05,0.05 ); 
+    const material = new THREE.MeshStandardMaterial( {wireframe:true, side:THREE.DoubleSide} ); 
+    const cube = new THREE.Mesh( geometry, material ); 
+    cube.position.set(a3Marker.position.x,a3Marker.position.y,a3Marker.position.z);
+    cube.rotation.set(-0.78,0,0)
+    console.log(cube)
+    //scene.add( cube );
+
+    
+    console.log(new THREE.Matrix4)
 
 
 });
@@ -95,6 +125,26 @@ function ( gltf ) {
 
 
 //////////////////////////////
+
+
+
+
+// DECALS //
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//////
 window.addEventListener('resize', function()
 
 {
@@ -112,6 +162,16 @@ camera.updateProjectionMatrix();
 function animate(time) {
     requestAnimationFrame( animate );
     controls.update();
+
+    /*
+    const raycaster = new THREE.Raycaster();
+    const pos = {x:0, y:0}
+
+    raycaster.setFromCamera(pos,camera)
+    const hits = raycaster.intersectObjects(capScene.children)
+
+    console.log(hits[0].point)
+    */
 
 
     renderer.render( scene, camera );
