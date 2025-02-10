@@ -16,19 +16,17 @@ const container = document.getElementById("threejscanvas")
 const renderer = new THREE.WebGLRenderer({canvas: container, antialias: true});
 renderer.setSize( container.clientWidth, container.clientHeight );
 
-//document.body.appendChild( renderer.domElement );'
-
-
 const controls = new OrbitControls( camera, renderer.domElement );
 
 camera.position.x = 0.5;
-camera.position.y = 0.2;
+camera.position.y = 0.3;
 camera.position.z = 0;
 
-//controls.target.set(-1, 1, 1);
+//camera.lookAt(new THREE.Vector3(0, 1, 0));
+//controls.target.set(0,1,0);
 
-
-
+controls.enableZoom = false;
+controls.enablePan = false;
 controls.enableDamping = true;
 controls.dampingFactor = 0.02;
 controls.rotateSpeed = 0.5
@@ -55,13 +53,13 @@ var delta = clock.getDelta();
 // ---------------------------------------------------------------------
 new RGBELoader()
 .setPath('./assets/')
-.load('brown_photostudio_01_2k.hdr', function (texture) {
+.load('photo_studio_01_2k.hdr', function (texture) {
 
-    
+    var backgroundTexture = textureLoader.load( './assets/background.jpg' );
     texture.mapping = THREE.EquirectangularReflectionMapping;
 
     scene.environment = texture;
-    scene.background = new THREE.Color(0.3,0.3,0.4)
+    scene.background = backgroundTexture
  
 
 });
