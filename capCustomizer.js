@@ -35,7 +35,7 @@ controls.rotateSpeed = 0.5
 
 
 let capScene, cap;
-let a3Marker;
+let a3Marker, leftMarker, rightMarker;
 let textureLoader = new THREE.TextureLoader();
 
 var clock = new THREE.Clock()
@@ -70,6 +70,11 @@ loadingManager.onLoad = function(){
 
   loadingDiv.style.display = "none";
 
+  createDecal("./assets/logo.png",a3Marker,new THREE.Vector3(0.05,0.05,0.05))
+  var leftDecal = createDecal("./assets/logo.png",leftMarker,new THREE.Vector3(0.05,0.05,0.05))
+  createDecal("./assets/logo.png",rightMarker,new THREE.Vector3(0.05,0.05,0.05))
+
+
 }
 
 
@@ -84,37 +89,27 @@ function ( gltf ) {
 
     capScene = gltf.scene;
     scene.add( capScene);
-    cap = capScene.getObjectByName('cap');
+    cap = capScene.getObjectByName('cap_1');
     a3Marker = capScene.getObjectByName('A3_marker');
     a3Marker.visible = false;
+    leftMarker = capScene.getObjectByName('left_marker');
+    leftMarker.visible = false;
+    rightMarker = capScene.getObjectByName('right_marker');
+    rightMarker.visible = false;
 
-    const texture = textureLoader.load("./assets/logo.png")
-    texture.flipY = true;
 
-    //const geometry =  new DecalGeometry( cap, new THREE.Vector3(0,0,0), new THREE.Euler(0,0,0), new THREE.Vector3(0.2,0.2,0.2) );
-    const a3Geometry =  new DecalGeometry( cap, a3Marker.position, new THREE.Euler().setFromQuaternion(new THREE.Quaternion(0,0,0,0)), new THREE.Vector3(0.05,0.05,0.1) );
-    const a3Material = new THREE.MeshBasicMaterial( { 
-        map:texture,
-        transparent:true,
-        side: THREE.FrontSide,
-        depthTest:true,
-        depthWrite:false,
-        polygonOffset:true,
-        polygonOffsetFactor: -4 } );
-    const decal = new THREE.Mesh( a3Geometry, a3Material );
-    scene.add( decal );
+
 
 
     const geometry = new THREE.BoxGeometry( 0.05,0.05,0.05 ); 
     const material = new THREE.MeshStandardMaterial( {wireframe:true, side:THREE.DoubleSide} ); 
     const cube = new THREE.Mesh( geometry, material ); 
-    cube.position.set(a3Marker.position.x,a3Marker.position.y,a3Marker.position.z);
-    cube.rotation.set(-0.78,0,0)
-    console.log(cube)
+    cube.position.set(leftMarker.position.x,leftMarker.position.y,leftMarker.position.z);
+    cube.rotation.set(leftMarker.rotation.x,leftMarker.rotation.y,leftMarker.rotation.z)
+
     //scene.add( cube );
 
-    
-    console.log(new THREE.Matrix4)
+
 
 
 });
@@ -132,7 +127,29 @@ function ( gltf ) {
 // DECALS //
 
 
+function createDecal(texturePath,marker,scale){
 
+    const decalTexture = textureLoader.load(texturePath)
+    decalTexture.flipY = false;
+    
+    const decalGeometry =  new DecalGeometry( cap, marker.position, new THREE.Euler().setFromQuaternion(new THREE.Quaternion(marker.rotation.x,marker.rotation.y,marker.rotation.z)), scale );
+    const decalMaterial = new THREE.MeshBasicMaterial( { 
+        map:decalTexture,
+        transparent:true,
+        side: THREE.FrontSide,
+        depthTest:true,
+        depthWrite:false,
+        polygonOffset:true,
+        polygonOffsetFactor: -4 } );
+    const decal = new THREE.Mesh( decalGeometry, decalMaterial );
+    scene.add( decal );
+    
+
+    return decal;
+
+
+
+}
 
 
 
