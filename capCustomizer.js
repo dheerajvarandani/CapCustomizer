@@ -36,6 +36,7 @@ controls.rotateSpeed = 0.5
 
 let capScene, cap, cap_inner;
 let a3Marker, leftMarker, rightMarker;
+let leftDecal, rightDecal;
 let textureLoader = new THREE.TextureLoader();
 
 var clock = new THREE.Clock()
@@ -179,7 +180,24 @@ function createDecal(texturePath,marker,scale){
 
 
 
+// Logo Upload //
 
+var leftLogoInput = document.getElementById("left-logo-upload");
+var rightLogoInput = document.getElementById("right-logo-upload");
+
+leftLogoInput.addEventListener("change", function(){
+
+    scene.remove(leftDecal)
+    leftDecal = createDecal(URL.createObjectURL(this.files[0]), leftMarker, new THREE.Vector3(0.1,0.1,0.05))
+
+})
+
+rightLogoInput.addEventListener("change", function(){
+
+    scene.remove(rightDecal)
+    rightDecal = createDecal(URL.createObjectURL(this.files[0]), rightMarker, new THREE.Vector3(0.1,0.1,0.05))
+
+})
 
 
 
