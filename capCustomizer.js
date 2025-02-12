@@ -34,7 +34,7 @@ controls.rotateSpeed = 0.5
 
 
 
-let capScene, cap;
+let capScene, cap, cap_inner;
 let a3Marker, leftMarker, rightMarker;
 let textureLoader = new THREE.TextureLoader();
 
@@ -70,9 +70,9 @@ loadingManager.onLoad = function(){
 
   loadingDiv.style.display = "none";
 
-  createDecal("./assets/logo.png",a3Marker,new THREE.Vector3(0.05,0.05,0.05))
-  var leftDecal = createDecal("./assets/logo.png",leftMarker,new THREE.Vector3(0.05,0.05,0.05))
-  createDecal("./assets/logo.png",rightMarker,new THREE.Vector3(0.05,0.05,0.05))
+  createDecal("./assets/logo.png",a3Marker,new THREE.Vector3(0.04,0.04,0.04))
+  //var leftDecal = createDecal("./assets/logo.png",leftMarker,new THREE.Vector3(0.05,0.05,0.05))
+  //createDecal("./assets/logo.png",rightMarker,new THREE.Vector3(0.05,0.05,0.05))
 
 
 }
@@ -90,6 +90,9 @@ function ( gltf ) {
     capScene = gltf.scene;
     scene.add( capScene);
     cap = capScene.getObjectByName('cap_1');
+    cap_inner = capScene.getObjectByName('cap_2');
+
+    //markers for logo decals
     a3Marker = capScene.getObjectByName('A3_marker');
     a3Marker.visible = false;
     leftMarker = capScene.getObjectByName('left_marker');
@@ -121,6 +124,29 @@ function ( gltf ) {
 
 //////////////////////////////
 
+// COLOR PICKER //
+
+var capColor = new THREE.Color()
+
+var swatches = document.getElementsByClassName("swatch");
+
+for(var i=0; i < swatches.length; i++){
+
+    swatches[i].addEventListener("click", function(){
+        capColor.set(this.dataset.color);
+        cap.material.color = capColor;
+        cap_inner.material.color = capColor;
+    })
+
+}
+
+var colorPickerInput = document.getElementById("color-picker-input");
+
+colorPickerInput.addEventListener("input", function(){
+    capColor.set(this.value)
+    cap.material.color = capColor;
+    cap_inner.material.color = capColor;
+})
 
 
 

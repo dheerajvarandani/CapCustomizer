@@ -191,16 +191,29 @@
 
 #color-picker-input {
 
-    border-radius: 50%;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background-color: transparent;
+    border: none;
+    margin: 5%;
+
 }
+
+#color-picker-input::-webkit-color-swatch {
+
+    border-radius: 50%;
+
+}
+
 .swatches {
     display: flex;
     justify-content: center;
     margin: 20px 0;
 }
 .swatch {
-    width: 40px;
-    height: 40px;
+    width: 25px;
+    height: 25px;
     margin: 5px;
     cursor: pointer;
     border: 2px solid #ccc;

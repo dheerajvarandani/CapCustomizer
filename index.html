@@ -1,6 +1,8 @@
 <html>
 
-<head></head>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+</head>
 
 <body>
     
@@ -14,17 +16,27 @@
   </div>
 </div>
 
-<div id="color-picker">
-<h2>Pick a Color</h2>
-<input type="color" id="color-picker-input">
-<div class="swatches">
+<div id="toggles" style="position: absolute; right: 3%; top: 5%;">
+    <!--VISIBILITY TOGGLE MENU-->            
+    <div id="visibility-toggle" class="border border-secondary rounded py-3 px-2 tint-bg text-white" >
+    <h5 class="spany w-100 d-block  lh-sm text-white hind-light">Pick a Color</h5>
+    <div class="px-2 d-flex flex-column  shadow-lg" >
+    <br>
+
+    <input type="color" id="color-picker-input" value="#0000FF">
     <div class="swatch" style="background-color: #FF5733" data-color="#FF5733"></div>
     <div class="swatch" style="background-color: #33FF57" data-color="#33FF57"></div>
     <div class="swatch" style="background-color: #3357FF" data-color="#3357FF"></div>
     <div class="swatch" style="background-color: #F1C40F" data-color="#F1C40F"></div>
     <div class="swatch" style="background-color: #9B59B6" data-color="#9B59B6"></div>
+        
+
+    <br>
+    </div>
 </div>
 </div>
+
+
   
 <script type="importmap">
 
