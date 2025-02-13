@@ -20,18 +20,84 @@
 
     <!--VISIBILITY TOGGLE MENU-->   
     <div>         
-        <div id="visibility-toggle" class="border border-secondary rounded py-3 px-2 tint-bg text-white" >
+        <div  class="border border-secondary rounded py-3 px-2 tint-bg text-white" >
         <h5 class="spany w-100 d-block  lh-sm text-white hind-light">Pick a Color</h5>
         <div class="px-2 d-flex flex-column  shadow-lg" >
         <br>
 
-        <div class="d-flex">
+        <div id="color-picker-div">
         <input type="color" id="color-picker-input" value="#0000FF">
-        <div class="swatch" style="background-color: #FF5733" data-color="#FF5733"></div>
-        <div class="swatch" style="background-color: #33FF57" data-color="#33FF57"></div>
-        <div class="swatch" style="background-color: #3357FF" data-color="#3357FF"></div>
-        <div class="swatch" style="background-color: #F1C40F" data-color="#F1C40F"></div>
-        <div class="swatch" style="background-color: #9B59B6" data-color="#9B59B6"></div>
+        <div class="d-flex">
+            <div class="swatch" style="background-color: #FFFFFF" data-color="#FFFFFF" data-logo="black"></div>
+            <span>White</span>
+        </div>
+        
+        <div class="d-flex">
+            <div class="swatch" style="background-color: #000000" data-color="#000000"></div>
+            <span>Black</span>
+        </div>
+        
+        <div class="d-flex">
+            <div class="swatch" style="background-color: #39FF14" data-color="#39FF14" data-logo="black"></div>
+            <span>Florescent Green</span>
+        </div>
+        
+        <div class="d-flex">
+            <div class="swatch" style="background-color: #FF5733" data-color="#FF5733" data-logo="black"></div>
+            <span>Orange</span>
+        </div>
+        
+        <div class="d-flex">
+            <div class="swatch" style="background-color: #FFFF00" data-color="#FFFF00" data-logo="black"></div>
+            <span>Yellow</span>
+        </div>
+        
+        <div class="d-flex">
+            <div class="swatch" style="background-color: #FFD700" data-color="#FFD700" data-logo="black"></div>
+            <span>Gold</span>
+        </div>
+        
+        <div class="d-flex">
+            <div class="swatch" style="background-color: #006400" data-color="#006400"></div>
+            <span>Dark Green</span>
+        </div>
+        
+        <div class="d-flex">
+            <div class="swatch" style="background-color: #ADD8E6" data-color="#ADD8E6" data-logo="black"></div>
+            <span>Light Blue</span>
+        </div>
+        
+        <div class="d-flex">
+            <div class="swatch" style="background-color: #FFC0CB" data-color="#FFC0CB" data-logo="black"></div>
+            <span>Pink</span>
+        </div>
+        
+        <div class="d-flex">
+            <div class="swatch" style="background-color: #800080" data-color="#800080"></div>
+            <span>Purple</span>
+        </div>
+        
+        <div class="d-flex">
+            <div class="swatch" style="background-color: #FF0000" data-color="#FF0000"></div>
+            <span>Red</span>
+        </div>
+        
+        <div class="d-flex">
+            <div class="swatch" style="background-color: #4169E1" data-color="#4169E1"></div>
+            <span>Royal</span>
+        </div>
+        
+        <div class="d-flex">
+            <div class="swatch" style="background-color: #C0C0C0" data-color="#C0C0C0" data-logo="black"></div>
+            <span>Silver</span>
+        </div>
+        
+        <div class="d-flex">
+            <div class="swatch" style="background-color: #000080" data-color="#000080"></div>
+            <span>Navy</span>
+        </div>
+        
+
     </div>
     </div>
     </div>
@@ -43,16 +109,14 @@
         <h5 class="spany w-100 d-block  lh-sm text-white hind-light">Upload Logo</h5>
         <div class="px-2 d-flex flex-column  shadow-lg" >
 
-            <input type="file" name="" id="left-logo-upload">
-            <input type="file" name="" id="right-logo-upload">
-        <br>
+            <input type="file" id="left-logo-upload">
+            <label class="custom-file-upload" for="left-logo-upload">Left Side Logo</label>
 
+            <input type="file" id="right-logo-upload">
+            <label class="custom-file-upload" for="right-logo-upload">Right Side Logo</label>
 
     </div>
 
-        
-
-    <br>
     </div>
 </div>
 </div>

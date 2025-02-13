@@ -206,6 +206,15 @@
 
 }
 
+
+#color-picker-div{
+
+    max-height: 60vh;
+    overflow-y: scroll;
+    scrollbar-color: rgb(135, 132, 132) rgb(0, 0, 0);
+    scrollbar-width: thin;
+}
+
 .swatches {
     display: flex;
     justify-content: center;
@@ -219,3 +228,14 @@
     border: 2px solid #ccc;
     border-radius: 50%;
 }
+
+input[type="file"] {
+    display: none;
+  }
+  
+  .custom-file-upload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+  }

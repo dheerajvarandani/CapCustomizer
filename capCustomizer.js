@@ -36,7 +36,7 @@ controls.rotateSpeed = 0.5
 
 let capScene, cap, cap_inner;
 let a3Marker, leftMarker, rightMarker;
-let leftDecal, rightDecal;
+let a3Decal, leftDecal, rightDecal;
 let textureLoader = new THREE.TextureLoader();
 
 var clock = new THREE.Clock()
@@ -71,7 +71,7 @@ loadingManager.onLoad = function(){
 
   loadingDiv.style.display = "none";
 
-  createDecal("./assets/logo.png",a3Marker,new THREE.Vector3(0.04,0.04,0.04))
+  a3Decal = createDecal("./assets/logo.png",a3Marker,new THREE.Vector3(0.052,0.04,0.04))
   //var leftDecal = createDecal("./assets/logo.png",leftMarker,new THREE.Vector3(0.05,0.05,0.05))
   //createDecal("./assets/logo.png",rightMarker,new THREE.Vector3(0.05,0.05,0.05))
 
@@ -137,6 +137,19 @@ for(var i=0; i < swatches.length; i++){
         capColor.set(this.dataset.color);
         cap.material.color = capColor;
         cap_inner.material.color = capColor;
+
+        if(this.dataset.logo == "black"){
+
+            scene.remove(a3Decal);
+            a3Decal = createDecal("./assets/logo_dark.png",a3Marker,new THREE.Vector3(0.052,0.04,0.04))
+        }
+        else{
+
+            scene.remove(a3Decal);
+            a3Decal = createDecal("./assets/logo.png",a3Marker,new THREE.Vector3(0.052,0.04,0.04))
+
+        }
+        
     })
 
 }
@@ -185,17 +198,64 @@ function createDecal(texturePath,marker,scale){
 var leftLogoInput = document.getElementById("left-logo-upload");
 var rightLogoInput = document.getElementById("right-logo-upload");
 
-leftLogoInput.addEventListener("change", function(){
+leftLogoInput.addEventListener("change", function(e){
 
     scene.remove(leftDecal)
-    leftDecal = createDecal(URL.createObjectURL(this.files[0]), leftMarker, new THREE.Vector3(0.1,0.1,0.05))
+    var url = URL.createObjectURL(this.files[0])
+
+    var img = new Image();
+    img.src = url;
+
+    var width = 0.05;
+    var height = 0.05;
+
+    img.onload = function(){
+
+        if(img.width > img.height){
+            var factor = img.width / img.height;
+            width = width * factor
+
+        }
+        else{
+            var factor = img.height / img.width;
+            height = height * factor
+
+        }
+
+
+        leftDecal = createDecal(url, leftMarker, new THREE.Vector3(width,height,0.05))
+    }
+    
 
 })
 
 rightLogoInput.addEventListener("change", function(){
 
     scene.remove(rightDecal)
-    rightDecal = createDecal(URL.createObjectURL(this.files[0]), rightMarker, new THREE.Vector3(0.1,0.1,0.05))
+    var url = URL.createObjectURL(this.files[0])
+
+    var img = new Image();
+    img.src = url;
+
+    var width = 0.05;
+    var height = 0.05;
+
+    img.onload = function(){
+
+        if(img.width > img.height){
+            var factor = img.width / img.height;
+            width = width * factor
+
+        }
+        else{
+            var factor = img.height / img.width;
+            height = height * factor
+
+        }
+
+
+        rightDecal = createDecal(url, rightMarker, new THREE.Vector3(width,height,0.05))
+    }
 
 })
 
