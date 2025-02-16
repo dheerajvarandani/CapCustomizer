@@ -31,12 +31,12 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.02;
 controls.rotateSpeed = 0.5
 
-
+const DEFAULT_SCALE = 0.05;
 
 
 let capScene, cap, cap_inner;
 let a3Marker, leftMarker, rightMarker;
-let a3Decal, leftDecal, rightDecal;
+let a3Decal;
 let textureLoader = new THREE.TextureLoader();
 
 var clock = new THREE.Clock()
@@ -44,7 +44,19 @@ var delta = clock.getDelta();
 
 
 
+var leftDecal = {   mesh: null,
+                    width: DEFAULT_SCALE,
+                    height: DEFAULT_SCALE,
+                    position: null,
+                    url: null
+                }
 
+var rightDecal = {   mesh: null,
+                    width: DEFAULT_SCALE,
+                    height: DEFAULT_SCALE,
+                    position: null,
+                    url: null
+                };
 
 
 
@@ -72,7 +84,7 @@ loadingManager.onLoad = function(){
   loadingDiv.style.display = "none";
 
   a3Decal = createDecal("./assets/logo.png",a3Marker,new THREE.Vector3(0.052,0.04,0.04))
-  //var leftDecal = createDecal("./assets/logo.png",leftMarker,new THREE.Vector3(0.05,0.05,0.05))
+  //var leftDecal.mesh = createDecal("./assets/logo.png",leftMarker,new THREE.Vector3(0.05,0.05,0.05))
   //createDecal("./assets/logo.png",rightMarker,new THREE.Vector3(0.05,0.05,0.05))
 
 
@@ -119,6 +131,38 @@ function ( gltf ) {
 });
 
 
+
+// scaling decals //
+
+function changeScale(decal,newScale){
+
+    if(decal == "left"){
+        scene.remove(leftDecal.mesh);
+        leftDecal.mesh = createDecal(leftDecal.url, leftMarker, new THREE.Vector3(leftDecal.width / 8 * newScale,leftDecal.height / 8 * newScale,0.1))
+    }
+    else if(decal == "right"){
+        scene.remove(rightDecal.mesh);
+        rightDecal.mesh = createDecal(rightDecal.url, rightMarker, new THREE.Vector3(rightDecal.width / 8 * newScale,rightDecal.height / 8 * newScale,0.1))
+        console.log(rightDecal.width,rightDecal.height)
+    }
+
+
+}
+
+
+var leftScale = document.getElementById("left-scale");
+
+leftScale.addEventListener("input", function(){
+
+    changeScale("left",this.value)
+})
+
+var rightScale = document.getElementById("right-scale");
+
+rightScale.addEventListener("input", function(){
+
+    changeScale("right",this.value)
+})
 
 
 
@@ -200,30 +244,42 @@ var rightLogoInput = document.getElementById("right-logo-upload");
 
 leftLogoInput.addEventListener("change", function(e){
 
-    scene.remove(leftDecal)
-    var url = URL.createObjectURL(this.files[0])
+    scene.remove(leftDecal.mesh)
+    leftDecal.url = URL.createObjectURL(this.files[0])
 
     var img = new Image();
-    img.src = url;
+    img.src = leftDecal.url;
 
-    var width = 0.05;
-    var height = 0.05;
+    var width = DEFAULT_SCALE;
+    var height = DEFAULT_SCALE;
 
     img.onload = function(){
 
         if(img.width > img.height){
             var factor = img.width / img.height;
-            width = width * factor
+            width = width * factor;
+            leftDecal.width = width;
+            leftDecal.height = height;
 
         }
-        else{
+        else if(img.height > img.width){
             var factor = img.height / img.width;
-            height = height * factor
+            height = height * factor;
+            leftDecal.height = height;
+            leftDecal.width = width;
+
 
         }
+        else if(img.width == img.height){
 
+            width = width;
+            height = height;
+            leftDecal.height = height;
+            leftDecal.width = width;
+        }
 
-        leftDecal = createDecal(url, leftMarker, new THREE.Vector3(width,height,0.05))
+        console.log(leftDecal.width,leftDecal)
+        leftDecal.mesh = createDecal(leftDecal.url, leftMarker, new THREE.Vector3(width,height,0.1))
     }
     
 
@@ -231,11 +287,11 @@ leftLogoInput.addEventListener("change", function(e){
 
 rightLogoInput.addEventListener("change", function(){
 
-    scene.remove(rightDecal)
-    var url = URL.createObjectURL(this.files[0])
+    scene.remove(rightDecal.mesh)
+    rightDecal.url = URL.createObjectURL(this.files[0])
 
     var img = new Image();
-    img.src = url;
+    img.src = rightDecal.url;
 
     var width = 0.05;
     var height = 0.05;
@@ -244,17 +300,29 @@ rightLogoInput.addEventListener("change", function(){
 
         if(img.width > img.height){
             var factor = img.width / img.height;
-            width = width * factor
+            width = width * factor;
+            rightDecal.width = width;
+            rightDecal.height = height;
 
         }
-        else{
+        else if(img.height > img.width){
             var factor = img.height / img.width;
-            height = height * factor
+            height = height * factor;
+            rightDecal.width = width;
+            rightDecal.height = height;
+
+        }
+        else if(img.height == img.width){
+
+            width = width;
+            height = height;
+            rightDecal.height = height;
+            rightDecal.width = width;
 
         }
 
 
-        rightDecal = createDecal(url, rightMarker, new THREE.Vector3(width,height,0.05))
+        rightDecal.mesh = createDecal(rightDecal.url, rightMarker, new THREE.Vector3(width,height,0.1))
     }
 
 })
