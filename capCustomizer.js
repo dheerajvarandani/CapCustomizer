@@ -13,7 +13,7 @@ const container = document.getElementById("threejscanvas")
 
 
 
-const renderer = new THREE.WebGLRenderer({canvas: container, antialias: true, preserveDrawingBuffer:true});
+const renderer = new THREE.WebGLRenderer({canvas: container, antialias: true, preserveDrawingBuffer:true,alpha:true});
 renderer.setSize( container.clientWidth, container.clientHeight );
 
 const controls = new OrbitControls( camera, renderer.domElement );
@@ -22,8 +22,9 @@ camera.position.x = 0.17;
 camera.position.y = 0.2;
 camera.position.z = 0.3 ;
 
-camera.lookAt(new THREE.Vector3(0,0.1,0));
-controls.target.set(0,0.1,0);
+camera.lookAt(new THREE.Vector3(0,0.17,0));
+controls.target.set(0,0.17,0);
+
 
 //controls.enableZoom = false;
 controls.enablePan = false;
@@ -67,13 +68,14 @@ var rightDecal = {   mesh: null,
 // ---------------------------------------------------------------------
 new RGBELoader()
 .setPath('./assets/')
-.load('photo_studio_01_2k.hdr', function (texture) {
+.load('photo_studio_02_2k.hdr', function (texture) {
 
-    var backgroundTexture = textureLoader.load( './assets/background.jpg' );
+    var backgroundTexture = textureLoader.load( './assets/background_wLogo.jpg' );
     texture.mapping = THREE.EquirectangularReflectionMapping;
 
     scene.environment = texture;
-    scene.background = backgroundTexture
+    //scene.background = texture;
+    //scene.background = backgroundTexture;
  
 
 });
@@ -85,7 +87,7 @@ loadingManager.onLoad = function(){
 
   loadingDiv.style.display = "none";
 
-  a3Decal = createDecal("./assets/logo.png",a3Marker,new THREE.Vector3(0.052,0.04,0.04))
+  a3Decal = createDecal("./assets/logo.png",a3Marker,new THREE.Vector3(0.046,0.036,0.04))
   //var leftDecal.mesh = createDecal("./assets/logo.png",leftMarker,new THREE.Vector3(0.05,0.05,0.05))
   //createDecal("./assets/logo.png",rightMarker,new THREE.Vector3(0.05,0.05,0.05))
 
@@ -117,6 +119,29 @@ function ( gltf ) {
     leftMarker.visible = false;
     rightMarker = capScene.getObjectByName('right_marker');
     rightMarker.visible = false;
+
+    /*
+    // Calculate bounding box
+    const box = new THREE.Box3().setFromObject(cap);
+    const size = new THREE.Vector3();
+    box.getSize(size);
+
+    // Calculate the distance the camera needs to be to fit the model
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const fov = camera.fov * (Math.PI / 180);
+    let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
+
+    // Adjust camera position
+    camera.position.z = cameraZ/5;
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+    // Update controls
+    controls.maxDistance = cameraZ * 0.5;
+    controls.update();
+
+    // Render the scene
+    renderer.render(scene, camera);
+    */
 
 
 
