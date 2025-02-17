@@ -26,10 +26,12 @@ camera.lookAt(new THREE.Vector3(0,0.1,0));
 controls.target.set(0,0.1,0);
 
 //controls.enableZoom = false;
-//controls.enablePan = false;
+controls.enablePan = false;
 controls.enableDamping = true;
 controls.dampingFactor = 0.02;
 controls.rotateSpeed = 0.5
+controls.minDistance = 0.3;
+controls.maxDistance = 0.6;
 
 const DEFAULT_SCALE = 0.05;
 
