@@ -206,10 +206,15 @@
 
 }
 
+#color-panel {
+    margin-bottom: 20px;
+}
+
+
 
 #color-picker-div{
 
-    max-height: 60vh;
+    max-height: 45vh;
     overflow-y: scroll;
     scrollbar-color: rgb(135, 132, 132) rgb(0, 0, 0);
     scrollbar-width: thin;
@@ -238,4 +243,21 @@ input[type="file"] {
     display: inline-block;
     padding: 6px 12px;
     cursor: pointer;
+    border-top-left-radius: 1em!important;
+    border-bottom-left-radius: 1em!important;
   }
+
+#remove-left-logo, #remove-right-logo{
+
+    background-color: transparent;
+    color: white;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    cursor: pointer;
+}
+
+#remove-left-logo:hover, #remove-right-logo:hover, .custom-file-upload:hover {
+
+    background-color: rgb(255, 255, 255);
+    color: black;
+}

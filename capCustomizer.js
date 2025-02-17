@@ -13,17 +13,17 @@ const container = document.getElementById("threejscanvas")
 
 
 
-const renderer = new THREE.WebGLRenderer({canvas: container, antialias: true});
+const renderer = new THREE.WebGLRenderer({canvas: container, antialias: true, preserveDrawingBuffer:true});
 renderer.setSize( container.clientWidth, container.clientHeight );
 
 const controls = new OrbitControls( camera, renderer.domElement );
 
-camera.position.x = 0.5;
-camera.position.y = 0.3;
-camera.position.z = 0;
+camera.position.x = 0.17;
+camera.position.y = 0.2;
+camera.position.z = 0.3 ;
 
-//camera.lookAt(new THREE.Vector3(0, 1, 0));
-//controls.target.set(0,1,0);
+camera.lookAt(new THREE.Vector3(0,0.1,0));
+controls.target.set(0,0.1,0);
 
 //controls.enableZoom = false;
 //controls.enablePan = false;
@@ -105,6 +105,9 @@ function ( gltf ) {
     cap = capScene.getObjectByName('cap_1');
     cap_inner = capScene.getObjectByName('cap_2');
 
+    cap.material.color = new THREE.Color("#1B365D");
+    cap_inner.material.color = new THREE.Color("#1B365D");
+
     //markers for logo decals
     a3Marker = capScene.getObjectByName('A3_marker');
     a3Marker.visible = false;
@@ -138,12 +141,12 @@ function changeScale(decal,newScale){
 
     if(decal == "left"){
         scene.remove(leftDecal.mesh);
-        leftDecal.mesh = createDecal(leftDecal.url, leftMarker, new THREE.Vector3(leftDecal.width / 8 * newScale,leftDecal.height / 8 * newScale,0.1))
+        leftDecal.mesh = createDecal(leftDecal.url, leftMarker, new THREE.Vector3(leftDecal.width / 8 * newScale,leftDecal.height / 8 * newScale,0.15))
     }
     else if(decal == "right"){
         scene.remove(rightDecal.mesh);
-        rightDecal.mesh = createDecal(rightDecal.url, rightMarker, new THREE.Vector3(rightDecal.width / 8 * newScale,rightDecal.height / 8 * newScale,0.1))
-        console.log(rightDecal.width,rightDecal.height)
+        rightDecal.mesh = createDecal(rightDecal.url, rightMarker, new THREE.Vector3(rightDecal.width / 8 * newScale,rightDecal.height / 8 * newScale,0.15))
+        //console.log(rightDecal.width,rightDecal.height)
     }
 
 
@@ -155,6 +158,10 @@ var leftScale = document.getElementById("left-scale");
 leftScale.addEventListener("input", function(){
 
     changeScale("left",this.value)
+    console.log(camera.position)
+    var currLookAt = (new THREE.Vector3( 0, 0, -1 )).applyQuaternion( camera.quaternion ).add( camera.position ); //get lookat vector, 0.5 is distance from camera
+    console.log(currLookAt)
+
 })
 
 var rightScale = document.getElementById("right-scale");
@@ -198,6 +205,7 @@ for(var i=0; i < swatches.length; i++){
 
 }
 
+/*
 var colorPickerInput = document.getElementById("color-picker-input");
 
 colorPickerInput.addEventListener("input", function(){
@@ -205,6 +213,7 @@ colorPickerInput.addEventListener("input", function(){
     cap.material.color = capColor;
     cap_inner.material.color = capColor;
 })
+*/
 
 
 
@@ -244,6 +253,9 @@ var rightLogoInput = document.getElementById("right-logo-upload");
 
 leftLogoInput.addEventListener("change", function(e){
 
+    
+    if(this.files[0] != "image/jpg")
+
     scene.remove(leftDecal.mesh)
     leftDecal.url = URL.createObjectURL(this.files[0])
 
@@ -254,6 +266,8 @@ leftLogoInput.addEventListener("change", function(e){
     var height = DEFAULT_SCALE;
 
     img.onload = function(){
+
+        leftScale.value = 8;
 
         if(img.width > img.height){
             var factor = img.width / img.height;
@@ -279,13 +293,14 @@ leftLogoInput.addEventListener("change", function(e){
         }
 
         console.log(leftDecal.width,leftDecal)
-        leftDecal.mesh = createDecal(leftDecal.url, leftMarker, new THREE.Vector3(width,height,0.1))
+        leftDecal.mesh = createDecal(leftDecal.url, leftMarker, new THREE.Vector3(width,height,0.15))
     }
     
 
 })
 
 rightLogoInput.addEventListener("change", function(){
+    
 
     scene.remove(rightDecal.mesh)
     rightDecal.url = URL.createObjectURL(this.files[0])
@@ -297,6 +312,8 @@ rightLogoInput.addEventListener("change", function(){
     var height = 0.05;
 
     img.onload = function(){
+
+        rightScale.value = 8;
 
         if(img.width > img.height){
             var factor = img.width / img.height;
@@ -322,14 +339,100 @@ rightLogoInput.addEventListener("change", function(){
         }
 
 
-        rightDecal.mesh = createDecal(rightDecal.url, rightMarker, new THREE.Vector3(width,height,0.1))
+        rightDecal.mesh = createDecal(rightDecal.url, rightMarker, new THREE.Vector3(width,height,0.15))
     }
 
 })
 
 
+var removeLeftDecalBtn = document.getElementById("remove-left-logo");
+removeLeftDecalBtn.addEventListener("click",function(){
+
+    if(leftDecal.mesh){
+    scene.remove(leftDecal.mesh)
+    }
+
+})
+
+var removeRightDecalBtn = document.getElementById("remove-right-logo");
+removeRightDecalBtn.addEventListener("click",function(){
+
+    if(rightDecal.mesh){
+    scene.remove(rightDecal.mesh)
+    }
+
+})
 
 
+function setCamera(position) {
+
+
+
+    camera.position.set(position.x, position.y, position.z)
+    camera.lookAt(new THREE.Vector3(0, 0, 0))
+
+    renderer.render(scene, camera)
+
+
+
+}
+
+
+
+
+
+
+
+function leftScreenshot(){
+
+    const dataURL = renderer.domElement.toDataURL( 'image/png' );
+    var left_ss_Link = document.createElement('a');
+    left_ss_Link.href = dataURL;
+    left_ss_Link.download = "left_screenshot";     
+    
+    left_ss_Link.click()
+
+}
+
+
+//screenshot//
+var exportBtn = document.getElementById('export');
+
+exportBtn.addEventListener("click",function(){
+
+
+    setCamera(new THREE.Vector3(0.5,0.3,0));
+    leftScreenshot();
+
+
+
+    /*
+    camera.position.x = -0.5;
+    camera.position.z = 0.1;
+    camera.position.z = 0.2;
+    camera.lookAt(new THREE.Vector3(0,0,0))
+    */
+
+
+
+    if(leftDecal.url != null){
+        var leftLink = document.createElement('a');
+        leftLink.href = leftDecal.url;
+        leftLink.download = "left_side_logo";
+        leftLink.click()
+    }
+
+    if(rightDecal.url != null){
+        var rightLink = document.createElement('a');
+        rightLink.href = rightDecal.url;
+        rightLink.download = "right_side_logo";
+        rightLink.click()
+    }
+
+
+
+
+})
 
 
 
