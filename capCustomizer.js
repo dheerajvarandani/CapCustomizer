@@ -70,7 +70,7 @@ new RGBELoader()
 .setPath('./assets/')
 .load('photo_studio_02_2k.hdr', function (texture) {
 
-    var backgroundTexture = textureLoader.load( './assets/background_wLogo.jpg' );
+    var backgroundTexture = textureLoader.load( './assets/background.jpg' );
     texture.mapping = THREE.EquirectangularReflectionMapping;
 
     scene.environment = texture;
@@ -185,9 +185,9 @@ var leftScale = document.getElementById("left-scale");
 leftScale.addEventListener("input", function(){
 
     changeScale("left",this.value)
-    console.log(camera.position)
-    var currLookAt = (new THREE.Vector3( 0, 0, -1 )).applyQuaternion( camera.quaternion ).add( camera.position ); //get lookat vector, 0.5 is distance from camera
-    console.log(currLookAt)
+    //console.log(camera.position)
+    //var currLookAt = (new THREE.Vector3( 0, 0, -1 )).applyQuaternion( camera.quaternion ).add( camera.position ); //get lookat vector, 0.5 is distance from camera
+    //console.log(currLookAt)
 
 })
 
@@ -275,62 +275,56 @@ function createDecal(texturePath,marker,scale){
 
 // Logo Upload //
 
-var leftLogoInput = document.getElementById("left-logo-upload");
-var rightLogoInput = document.getElementById("right-logo-upload");
+function leftDecalUpload(file){    
 
-leftLogoInput.addEventListener("change", function(e){
 
+        scene.remove(leftDecal.mesh)
+        leftDecal.url = URL.createObjectURL(file)
     
-    if(this.files[0] != "image/jpg")
-
-    scene.remove(leftDecal.mesh)
-    leftDecal.url = URL.createObjectURL(this.files[0])
-
-    var img = new Image();
-    img.src = leftDecal.url;
-
-    var width = DEFAULT_SCALE;
-    var height = DEFAULT_SCALE;
-
-    img.onload = function(){
-
-        leftScale.value = 8;
-
-        if(img.width > img.height){
-            var factor = img.width / img.height;
-            width = width * factor;
-            leftDecal.width = width;
-            leftDecal.height = height;
-
-        }
-        else if(img.height > img.width){
-            var factor = img.height / img.width;
-            height = height * factor;
-            leftDecal.height = height;
-            leftDecal.width = width;
-
-
-        }
-        else if(img.width == img.height){
-
-            width = width;
-            height = height;
-            leftDecal.height = height;
-            leftDecal.width = width;
-        }
-
-        console.log(leftDecal.width,leftDecal)
-        leftDecal.mesh = createDecal(leftDecal.url, leftMarker, new THREE.Vector3(width,height,0.15))
-    }
+        var img = new Image();
+        img.src = leftDecal.url;
     
-
-})
-
-rightLogoInput.addEventListener("change", function(){
+        var width = DEFAULT_SCALE;
+        var height = DEFAULT_SCALE;
     
+        img.onload = function(){
+    
+            leftScale.value = 8;
+    
+            if(img.width > img.height){
+                var factor = img.width / img.height;
+                width = width * factor;
+                leftDecal.width = width;
+                leftDecal.height = height;
+    
+            }
+            else if(img.height > img.width){
+                var factor = img.height / img.width;
+                height = height * factor;
+                leftDecal.height = height;
+                leftDecal.width = width;
+    
+    
+            }
+            else if(img.width == img.height){
+    
+                width = width;
+                height = height;
+                leftDecal.height = height;
+                leftDecal.width = width;
+            }
+    
+            leftDecal.mesh = createDecal(leftDecal.url, leftMarker, new THREE.Vector3(width,height,0.15))
+        }
+        
+
+}
+
+function rightDecalUpload(file){
+      
 
     scene.remove(rightDecal.mesh)
-    rightDecal.url = URL.createObjectURL(this.files[0])
+    rightDecal.url = URL.createObjectURL(file)
 
     var img = new Image();
     img.src = rightDecal.url;
@@ -369,6 +363,31 @@ rightLogoInput.addEventListener("change", function(){
         rightDecal.mesh = createDecal(rightDecal.url, rightMarker, new THREE.Vector3(width,height,0.15))
     }
 
+}
+
+var leftLogoInput = document.getElementById("left-logo-upload");
+var rightLogoInput = document.getElementById("right-logo-upload");
+
+leftLogoInput.addEventListener("change", function(){
+
+    leftDecalUpload(this.files[0]);
+
+    if(bothSides.checked){
+     rightDecalUpload(this.files[0]);
+    }
+
+})
+
+rightLogoInput.addEventListener("change", function(){
+
+    rightDecalUpload(this.files[0]);
+
+    if(bothSides.checked){
+        leftDecalUpload(this.files[0]);
+    }
+    
+    console.log(leftDecal.url,rightDecal.url)
+
 })
 
 
@@ -377,7 +396,9 @@ removeLeftDecalBtn.addEventListener("click",function(){
 
     if(leftDecal.mesh){
     scene.remove(leftDecal.mesh)
+    leftDecal.url = null;
     }
+
 
 })
 
@@ -386,9 +407,35 @@ removeRightDecalBtn.addEventListener("click",function(){
 
     if(rightDecal.mesh){
     scene.remove(rightDecal.mesh)
+    rightDecal.url = null;
     }
 
 })
+
+
+var bothSides = document.getElementById("both-sides");
+
+bothSides.addEventListener("click",function(){  
+
+    if(this.checked){
+
+        if(leftDecal.url != null && rightDecal.url == null){
+
+            rightDecal.mesh = createDecal(leftDecal.url, rightMarker, new THREE.Vector3(leftDecal.width,leftDecal.height,0.15))
+            rightDecal.url = leftDecal.url;
+
+        }
+
+        else if(leftDecal.url == null && rightDecal.url != null){
+
+            leftDecal.mesh = createDecal(rightDecal.url, leftMarker, new THREE.Vector3(rightDecal.width,rightDecal.height,0.15))
+            leftDecal.url = rightDecal.url;
+        }
+}
+
+})
+
+
 
 
 function setCamera(position) {
