@@ -457,12 +457,12 @@ function setCamera(position) {
 
 
 
-function leftScreenshot(){
+function screenshot(filename){
 
     const dataURL = renderer.domElement.toDataURL( 'image/png' );
     var left_ss_Link = document.createElement('a');
     left_ss_Link.href = dataURL;
-    left_ss_Link.download = "left_screenshot";     
+    left_ss_Link.download = filename;     
     
     left_ss_Link.click()
 
@@ -476,7 +476,10 @@ exportBtn.addEventListener("click",function(){
 
 
     setCamera(new THREE.Vector3(0.5,0.3,0));
-    leftScreenshot();
+    screenshot("left_screenshot")
+
+    setCamera(new THREE.Vector3(-2,0.3,0));
+    screenshot("right_screenshot")
 
 
 
