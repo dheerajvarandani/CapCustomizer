@@ -148,8 +148,11 @@
             </div>
 
             
-
-            <a id="export">Export</a>
+            <!-- Button to trigger modal -->
+            <button type="button" class="btn btn-outline-warning my-2" data-bs-toggle="modal" data-bs-target="#capOrderModal">
+                Place Order
+            </button>
+            <a id="export" style="display: none;">Export</a>
 
     </div>
 
@@ -157,7 +160,71 @@
 </div>
 </div>
 
+<!--PLACE ORDER FORM-->
 
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="capOrderModal" tabindex="-1" aria-labelledby="capOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="capOrderModalLabel">Order Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="name" class="form-label">Name</label>
+              <input type="text" class="form-control" id="name" required>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="phone" class="form-label">Phone</label>
+              <input type="tel" class="form-control" id="phone" required>
+            </div>
+            <div class="mb-3">
+              <label for="address" class="form-label">Delivery Address</label>
+              <textarea class="form-control" id="address" rows="2" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="capType" class="form-label">Type of Cap</label>
+              <select class="form-select" id="capType" required>
+                <option value="Silicone">Silicone</option>
+                <option value="Dome">Dome</option>
+                <option value="3D Dome">3D Dome</option>
+                <option value="Latex">Latex</option>
+                <option value="Silicone & Latex">Silicone & Latex</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="affiliation" class="form-label">Affiliation</label>
+              <select class="form-select" id="affiliation" required>
+                <option value="Club">Club</option>
+                <option value="High School">High School</option>
+                <option value="College">College</option>
+                <option value="Event">Event</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="quantity" class="form-label">Quantity</label>
+              <input type="number" class="form-control" id="quantity" min="1" required>
+            </div>
+            <div class="mb-3">
+              <label for="needByDate" class="form-label">Need by Date</label>
+              <input type="date" class="form-control" id="needByDate" required>
+            </div>
+            <button type="submit" class="btn btn-light">Submit Order</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+ 
+
+  <!--END PLACE ORDER FORM-->
   
 <script type="importmap">
 
@@ -169,6 +236,7 @@
 </script>
 <script type="module" src="./capCustomizer.js"></script>
 <script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

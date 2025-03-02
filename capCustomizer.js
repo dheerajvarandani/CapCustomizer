@@ -526,7 +526,7 @@ camera.updateProjectionMatrix();
 
 
 
-
+console.log(typeof bootstrap);
 
 function animate(time) {
     requestAnimationFrame( animate );
