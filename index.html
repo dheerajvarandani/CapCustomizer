@@ -173,36 +173,39 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form>
+          <!--form action="https://docs.google.com/forms/d/e/1FAIpQLSeUVH40qdP9Z3lFYcyra7G-hUwE58VD6Id_oHiDbSMSHaSHaQ/formResponse"-->
+          <form id="order-form">
             <div class="mb-3">
               <label for="name" class="form-label">Name</label>
-              <input type="text" class="form-control" id="name" required>
+              <input type="text" name="entry.819567777" class="form-control" id="name" required>
             </div>
             <div class="mb-3">
               <label for="email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="email" required>
+              <input type="email" name="entry.1065242926" class="form-control" id="email" required>
             </div>
             <div class="mb-3">
               <label for="phone" class="form-label">Phone</label>
-              <input type="tel" class="form-control" id="phone" required>
+              <input type="tel" name="entry.502256602" class="form-control" id="phone" required>
             </div>
             <div class="mb-3">
               <label for="address" class="form-label">Delivery Address</label>
-              <textarea class="form-control" id="address" rows="2" required></textarea>
+              <textarea name="entry.631269224" class="form-control" id="address" rows="2" required></textarea>
             </div>
             <div class="mb-3">
               <label for="capType" class="form-label">Type of Cap</label>
-              <select class="form-select" id="capType" required>
-                <option value="Silicone">Silicone</option>
-                <option value="Dome">Dome</option>
-                <option value="3D Dome">3D Dome</option>
-                <option value="Latex">Latex</option>
-                <option value="Silicone & Latex">Silicone & Latex</option>
+              <select name="entry.1816399421" class="form-select" id="capType" required>
+                <option value="Silicone (Standard)">Silicone (Standard)</option>
+                <option value="Dome (Racing)">Dome (Racing)</option>
+                <option value="3 D Soft Silicone Dome (Elite Racing)">3 D Soft Silicone Dome (Elite Racing)</option>
+                <option value="Latex (Economical)">Latex (Economical)</option>
+                <option value="Long Hair">Long Hair</option>
+                <option value="Soul Caps (large caps primarily for dreadlocks and afros)">Soul Caps (large caps primarily for dreadlocks and afros)</option>
               </select>
             </div>
             <div class="mb-3">
               <label for="affiliation" class="form-label">Affiliation</label>
-              <select class="form-select" id="affiliation" required>
+              <select class="form-select" name="entry.1045991785" id="affiliation">
+                <option value=""></option>
                 <option value="Club">Club</option>
                 <option value="High School">High School</option>
                 <option value="College">College</option>
@@ -211,13 +214,13 @@
             </div>
             <div class="mb-3">
               <label for="quantity" class="form-label">Quantity</label>
-              <input type="number" class="form-control" id="quantity" min="1" required>
+              <input name="entry.351123679" type="number" class="form-control" id="quantity" min="1" required>
             </div>
             <div class="mb-3">
               <label for="needByDate" class="form-label">Need by Date</label>
-              <input type="date" class="form-control" id="needByDate" required>
+              <input name="entry.1791446368" type="date" class="form-control" id="needByDate" required>
             </div>
-            <button type="submit" class="btn btn-light">Submit Order</button>
+            <button type="submit" class="btn btn-primary">Submit Order</button>
           </form>
         </div>
       </div>
@@ -227,6 +230,24 @@
  
 
   <!--END PLACE ORDER FORM-->
+
+  <script>
+
+    document.getElementById("order-form").addEventListener("submit", function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        let formData = new FormData(this);
+
+        fetch("https://docs.google.com/forms/d/e/1FAIpQLSeUVH40qdP9Z3lFYcyra7G-hUwE58VD6Id_oHiDbSMSHaSHaQ/formResponse", {
+            method: "POST",
+            body: formData,
+            mode: "no-cors" // Prevent CORS issues
+        }).then(() => {
+            //document.getElementById("responseMessage").style.display = "block"; // Show confirmation message
+            this.reset(); // Reset the form
+        }).catch(error => console.error("Error:", error));
+    });
+  </script>
   
 <script type="importmap">
 

@@ -532,17 +532,6 @@ function animate(time) {
     requestAnimationFrame( animate );
     controls.update();
 
-    /*
-    const raycaster = new THREE.Raycaster();
-    const pos = {x:0, y:0}
-
-    raycaster.setFromCamera(pos,camera)
-    const hits = raycaster.intersectObjects(capScene.children)
-
-    console.log(hits[0].point)
-    */
-
-
     renderer.render( scene, camera );
     
 
