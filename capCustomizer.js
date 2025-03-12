@@ -365,6 +365,38 @@ function rightDecalUpload(file){
 
 }
 
+
+function leftLogoToDrive(fileInput){
+
+    let reader = new FileReader();
+    reader.readAsDataURL(fileInput);
+    
+    reader.onload = async function () {
+        let base64String = reader.result.split(',')[1];
+
+        let payload = {
+            fileUpload: base64String,
+            fileName: fileInput.name,
+            mimeType: fileInput.type
+        };
+
+        let response = await fetch("https://script.google.com/macros/s/AKfycbyisrk-JBEORNUX2_H1dYxsNpzeLNk67S_6AdD5ll5oeDsOLz-C_65yLmicTbs-msqL8g/exec", { // Replace with your Web App URL
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        let result = await response.json();
+        if (result.success) {
+            alert("File uploaded successfully! View here: " + result.fileUrl);
+        } else {
+            alert("Upload failed: " + result.error);
+        }
+    };
+
+    
+}
+
 var leftLogoInput = document.getElementById("left-logo-upload");
 var rightLogoInput = document.getElementById("right-logo-upload");
 
@@ -375,6 +407,8 @@ leftLogoInput.addEventListener("change", function(){
     if(bothSides.checked){
      rightDecalUpload(this.files[0]);
     }
+
+    leftLogoToDrive(this.files[0])
 
 })
 
