@@ -11,7 +11,10 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 const container = document.getElementById("threejscanvas")
 
-
+var leftFile = null;
+var rightFile = null;
+var leftScreenshotFile = null;
+var rightScreenshotFile = null;
 
 const renderer = new THREE.WebGLRenderer({canvas: container, antialias: true, preserveDrawingBuffer:true,alpha:true});
 renderer.setSize( container.clientWidth, container.clientHeight );
@@ -205,7 +208,8 @@ rightScale.addEventListener("input", function(){
 
 // COLOR PICKER //
 
-var capColor = new THREE.Color()
+var capColor = new THREE.Color();
+var colorField = document.getElementById("color-text");
 
 var swatches = document.getElementsByClassName("swatch");
 
@@ -215,6 +219,8 @@ for(var i=0; i < swatches.length; i++){
         capColor.set(this.dataset.color);
         cap.material.color = capColor;
         cap_inner.material.color = capColor;
+
+        colorField.value = this.dataset.value;
 
         if(this.dataset.logo == "black"){
 
@@ -316,6 +322,8 @@ function leftDecalUpload(file){
     
             leftDecal.mesh = createDecal(leftDecal.url, leftMarker, new THREE.Vector3(width,height,0.15))
         }
+
+        leftFile = file;
         
 
 }
@@ -363,39 +371,34 @@ function rightDecalUpload(file){
         rightDecal.mesh = createDecal(rightDecal.url, rightMarker, new THREE.Vector3(width,height,0.15))
     }
 
+    rightFile = file;
+
 }
 
-
-function leftLogoToDrive(fileInput){
-
-    let reader = new FileReader();
-    reader.readAsDataURL(fileInput);
-    
+async function uploadImageToDrive(file) {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
     reader.onload = async function () {
-        let base64String = reader.result.split(',')[1];
+        const base64 = reader.result.split(',')[1]; // Remove data URL prefix
+        const formData = new URLSearchParams();
+        formData.append("image", base64);
+        formData.append("mimetype", file.type);
+        formData.append("filename", file.name);
 
-        let payload = {
-            fileUpload: base64String,
-            fileName: fileInput.name,
-            mimeType: fileInput.type
-        };
-
-        let response = await fetch("https://script.google.com/macros/s/AKfycbyisrk-JBEORNUX2_H1dYxsNpzeLNk67S_6AdD5ll5oeDsOLz-C_65yLmicTbs-msqL8g/exec", { // Replace with your Web App URL
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-
-        let result = await response.json();
-        if (result.success) {
-            alert("File uploaded successfully! View here: " + result.fileUrl);
-        } else {
-            alert("Upload failed: " + result.error);
+        try {
+            const response = await fetch("https://script.google.com/macros/s/AKfycbykFOx3aVd-aMyqX43PGYemaq_ljLOWszht9n_Dmbw0EDfcOdQzc9ftY6r0R6pW6j91ng/exec", {
+                method: "POST",
+                body: formData,
+            });
+            const result = await response.json();
+            return(result.url)
+        } catch (error) {
+            alert(error)
         }
     };
+  }
 
-    
-}
+
 
 var leftLogoInput = document.getElementById("left-logo-upload");
 var rightLogoInput = document.getElementById("right-logo-upload");
@@ -408,7 +411,8 @@ leftLogoInput.addEventListener("change", function(){
      rightDecalUpload(this.files[0]);
     }
 
-    leftLogoToDrive(this.files[0])
+
+    //uploadImageToDrive(this.files[0])
 
 })
 
@@ -469,8 +473,28 @@ bothSides.addEventListener("click",function(){
 
 })
 
+/*
+var submitBtn = document.getElementById("submit-btn");
 
-
+submitBtn.addEventListener("click",function(){
+    
+        if(leftFile != null){
+            uploadImageToDrive(leftFile).then((url) => {
+                leftScreenshotFile = url;
+            })
+        }
+    
+        if(rightFile != null){
+            uploadImageToDrive(rightFile).then((url) => {
+                rightScreenshotFile = url;
+            })
+        }
+    
+        console.log(leftScreenshotFile,rightScreenshotFile)
+    
+    })  
+*/
+    
 
 function setCamera(position) {
 
@@ -545,7 +569,37 @@ exportBtn.addEventListener("click",function(){
 
 })
 
+var leftUrlField = document.getElementById("left-url");
+var rightUrlField = document.getElementById("right-url");
 
+//submit form//
+document.getElementById("order-form").addEventListener("submit", function (e) {
+    e.preventDefault(); // Prevent the default form submission
+
+    if(leftFile != null){
+        leftUrlField.value = uploadImageToDrive(leftFile)
+    }
+
+    if(rightFile != null){
+        rightUrlField.value = uploadImageToDrive(rightFile)     
+    }
+    
+
+
+
+    let formData = new FormData(this);
+
+    fetch("https://docs.google.com/forms/d/e/1FAIpQLSeUVH40qdP9Z3lFYcyra7G-hUwE58VD6Id_oHiDbSMSHaSHaQ/formResponse", {
+        method: "POST",
+        body: formData,
+        mode: "no-cors" // Prevent CORS issues
+    }).then(() => {
+      $("#results-modal").modal("show")
+      $("#capOrderModal").modal("hide")
+        //document.getElementById("responseMessage").style.display = "block"; // Show confirmation message
+        this.reset(); // Reset the form
+    }).catch(error => console.error("Error:", error));
+});
 
 //////
 window.addEventListener('resize', function()
@@ -560,7 +614,6 @@ camera.updateProjectionMatrix();
 
 
 
-console.log(typeof bootstrap);
 
 function animate(time) {
     requestAnimationFrame( animate );
