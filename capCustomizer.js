@@ -375,7 +375,24 @@ function rightDecalUpload(file){
 
 }
 
+function dataURLtoFile(dataURL, filename) {
+    const arr = dataURL.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1]; // Extract MIME type
+    const byteString = atob(arr[1]); // Decode Base64
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const uint8Array = new Uint8Array(arrayBuffer);
+
+    for (let i = 0; i < byteString.length; i++) {
+        uint8Array[i] = byteString.charCodeAt(i);
+    }
+
+    return new File([uint8Array], filename, { type: mime });
+}
+
 async function uploadImageToDrive(file) {
+
+    return new Promise((resolve, reject) => {
+
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = async function () {
@@ -391,12 +408,13 @@ async function uploadImageToDrive(file) {
                 body: formData,
             });
             const result = await response.json();
-            return(result.url)
+            resolve(result.url)
         } catch (error) {
-            alert(error)
+            reject(error)
         }
     };
-  }
+  })
+}
 
 
 
@@ -501,7 +519,7 @@ function setCamera(position) {
 
 
     camera.position.set(position.x, position.y, position.z)
-    camera.lookAt(new THREE.Vector3(0, 0, 0))
+    //camera.lookAt(new THREE.Vector3(0, 0, 0))
 
     renderer.render(scene, camera)
 
@@ -513,16 +531,64 @@ function setCamera(position) {
 
 
 
+async function generateLeftLogoUrl(){
 
+    var url = await uploadImageToDrive(leftFile);
+    leftUrlField.value = url; // Set the returned URL to the text field
+    
 
-function screenshot(filename){
+}
+
+async function generateRightLogoUrl(){
+
+    var url = await uploadImageToDrive(leftFile);
+    rightUrlField.value = url; // Set the returned URL to the text field
+
+}
+
+async function generateLeftSSUrl(){
+
+    var leftSSUrl = await uploadImageToDrive(createLeftScreenshotFile());
+    leftSSurlField.value = leftSSUrl;
+
+}
+
+async function generateRightSSUrl(){
+
+    var rightSSUrl = await uploadImageToDrive(createRightScreenshotFile());
+    rightSSurlField.value = rightSSUrl;
+
+}
+
+function createLeftScreenshotFile(){
+
+    //setCamera(new THREE.Vector3(0.5,0.3,0));
+    //controls.target.set(0,0.1,0)
+
+    camera.position.x= 0.3197145402931859;
+    camera.position.y= 0.12059119417984965;
+    camera.position.z= 0.12305032560925093;
+    camera.lookAt(new THREE.Vector3(-0.9237064558894159,0.14274994459747486,-0.3555120766804307));
 
     const dataURL = renderer.domElement.toDataURL( 'image/png' );
-    var left_ss_Link = document.createElement('a');
-    left_ss_Link.href = dataURL;
-    left_ss_Link.download = filename;     
+
+    return(dataURLtoFile(dataURL,"left_ss.png"))
+
+}
+
+function createRightScreenshotFile(){ 
+
     
-    left_ss_Link.click()
+    //setCamera(new THREE.Vector3(-2,0.3,0));
+    //controls.target.set(0.15,0.05,0.1)
+
+    camera.position.x =  -0.32085163138353295
+    camera.position.y =  0.08759092296464484
+    camera.position.z =  0.10031437913233487
+    camera.lookAt(new THREE.Vector3(0.9269916939649954,0.2380930076299945,-0.2898242899372163));
+
+    const dataURL = renderer.domElement.toDataURL( 'image/png' );   
+    return(dataURLtoFile(dataURL,"right_ss.png"))
 
 }
 
@@ -536,8 +602,8 @@ exportBtn.addEventListener("click",function(){
     setCamera(new THREE.Vector3(0.5,0.3,0));
     screenshot("left_screenshot")
 
-    setCamera(new THREE.Vector3(-2,0.3,0));
-    screenshot("right_screenshot")
+    //setCamera(new THREE.Vector3(-2,0.3,0));
+    //screenshot("right_screenshot")
 
 
 
@@ -550,58 +616,79 @@ exportBtn.addEventListener("click",function(){
 
 
 
-    if(leftDecal.url != null){
-        var leftLink = document.createElement('a');
-        leftLink.href = leftDecal.url;
-        leftLink.download = "left_side_logo";
-        leftLink.click()
-    }
 
-    if(rightDecal.url != null){
-        var rightLink = document.createElement('a');
-        rightLink.href = rightDecal.url;
-        rightLink.download = "right_side_logo";
-        rightLink.click()
-    }
 
 
 
 
 })
 
-var leftUrlField = document.getElementById("left-url");
-var rightUrlField = document.getElementById("right-url");
+
+
+var leftUrlField = document.getElementById("left-logo-url");
+var rightUrlField = document.getElementById("right-logo-url");
+var leftSSurlField = document.getElementById("left-ss-url");
+var rightSSurlField = document.getElementById("right-ss-url");
 
 //submit form//
-document.getElementById("order-form").addEventListener("submit", function (e) {
+document.getElementById("order-form").addEventListener("submit", async function (e) {
     e.preventDefault(); // Prevent the default form submission
-
-    if(leftFile != null){
-        leftUrlField.value = uploadImageToDrive(leftFile)
+    
+    // Ensure all image URLs are generated before submitting the form
+    const uploadPromises = [];
+        
+    if(leftFile != null) {
+        uploadPromises.push(generateLeftLogoUrl());
+        uploadPromises.push(generateLeftSSUrl());
     }
 
-    if(rightFile != null){
-        rightUrlField.value = uploadImageToDrive(rightFile)     
+    if(rightFile != null) {
+        uploadPromises.push(generateRightLogoUrl());
+        uploadPromises.push(generateRightSSUrl());
+    }
+
+    try {
+        // Wait for all URL generation to finish
+        await Promise.all(uploadPromises);
+        
+        // Once all URLs are populated, submit the form
+        let formData = new FormData(this);
+        await fetch("https://docs.google.com/forms/d/e/1FAIpQLSeUVH40qdP9Z3lFYcyra7G-hUwE58VD6Id_oHiDbSMSHaSHaQ/formResponse", {
+            method: "POST",
+            body: formData,
+            mode: "no-cors" // Prevent CORS issues
+        });
+        
+        // Show modal after successful submission
+        $("#results-modal").modal("show");
+        $("#capOrderModal").modal("hide");
+        
+        this.reset(); // Reset the form
+
+    } catch (error) {
+        console.error("Error:", error);
     }
     
-
-
-
-    let formData = new FormData(this);
-
-    fetch("https://docs.google.com/forms/d/e/1FAIpQLSeUVH40qdP9Z3lFYcyra7G-hUwE58VD6Id_oHiDbSMSHaSHaQ/formResponse", {
-        method: "POST",
-        body: formData,
-        mode: "no-cors" // Prevent CORS issues
-    }).then(() => {
-      $("#results-modal").modal("show")
-      $("#capOrderModal").modal("hide")
-        //document.getElementById("responseMessage").style.display = "block"; // Show confirmation message
-        this.reset(); // Reset the form
-    }).catch(error => console.error("Error:", error));
 });
 
 //////
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'c' || event.key === 'C') {
+
+        const cameraPosition = camera.position;
+        console.log('camera.position.x:', cameraPosition.x);
+        console.log('camera.position.y:', cameraPosition.y);
+        console.log('camera.position.z:', cameraPosition.z);            
+
+        const cameraDirection = new THREE.Vector3();
+        camera.getWorldDirection(cameraDirection);
+        console.log('camera.lookAt(new THREE.Vector3(' + cameraDirection.x + ',' + cameraDirection.y + ',' + cameraDirection.z + '));');
+        // Your code to handle the C key press here
+    }
+});
+
+/////
 window.addEventListener('resize', function()
 
 {
