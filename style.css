@@ -41,12 +41,15 @@ body {
 
 #loadingDiv {
 
+    z-index: 10;
+
 }
 
 .lds-spinner {
     position: absolute;
     left: 50%;
     top: 50%;
+    
 }
 
 .lds-spinner div {

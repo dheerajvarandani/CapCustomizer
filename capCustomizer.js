@@ -225,12 +225,12 @@ for(var i=0; i < swatches.length; i++){
         if(this.dataset.logo == "black"){
 
             scene.remove(a3Decal);
-            a3Decal = createDecal("./assets/logo_dark.png",a3Marker,new THREE.Vector3(0.052,0.04,0.04))
+            a3Decal = createDecal("./assets/logo_dark.png",a3Marker,new THREE.Vector3(0.046,0.036,0.04))
         }
         else{
 
             scene.remove(a3Decal);
-            a3Decal = createDecal("./assets/logo.png",a3Marker,new THREE.Vector3(0.052,0.04,0.04))
+            a3Decal = createDecal("./assets/logo.png",a3Marker,new THREE.Vector3(0.046,0.036,0.04))
 
         }
         
@@ -541,7 +541,7 @@ async function generateLeftLogoUrl(){
 
 async function generateRightLogoUrl(){
 
-    var url = await uploadImageToDrive(leftFile);
+    var url = await uploadImageToDrive(rightFile);
     rightUrlField.value = url; // Set the returned URL to the text field
 
 }
@@ -570,6 +570,8 @@ function createLeftScreenshotFile(){
     camera.position.z= 0.12305032560925093;
     camera.lookAt(new THREE.Vector3(-0.9237064558894159,0.14274994459747486,-0.3555120766804307));
 
+    renderer.render(scene, camera)
+
     const dataURL = renderer.domElement.toDataURL( 'image/png' );
 
     return(dataURLtoFile(dataURL,"left_ss.png"))
@@ -586,6 +588,8 @@ function createRightScreenshotFile(){
     camera.position.y =  0.08759092296464484
     camera.position.z =  0.10031437913233487
     camera.lookAt(new THREE.Vector3(0.9269916939649954,0.2380930076299945,-0.2898242899372163));
+
+    renderer.render(scene, camera)
 
     const dataURL = renderer.domElement.toDataURL( 'image/png' );   
     return(dataURLtoFile(dataURL,"right_ss.png"))
@@ -634,6 +638,9 @@ var rightSSurlField = document.getElementById("right-ss-url");
 document.getElementById("order-form").addEventListener("submit", async function (e) {
     e.preventDefault(); // Prevent the default form submission
     
+    document.getElementById("submit-order-btn").disabled = true; // Disable the submit button to prevent multiple submissions
+    document.getElementById("submit-order-btn").innerHTML = "Submitting..."; // Change the button text to indicate submission
+
     // Ensure all image URLs are generated before submitting the form
     const uploadPromises = [];
         
@@ -660,16 +667,27 @@ document.getElementById("order-form").addEventListener("submit", async function 
         });
         
         // Show modal after successful submission
+        
         $("#results-modal").modal("show");
         $("#capOrderModal").modal("hide");
         
         this.reset(); // Reset the form
+        document.getElementById("submit-order-btn").disabled = false; // Disable the submit button to prevent multiple submissions
+        document.getElementById("submit-order-btn").innerHTML = "Submit Order"; // Change the button text to indicate submission
 
     } catch (error) {
         console.error("Error:", error);
     }
     
 });
+
+////// set today as the earliest possible Need By Date //
+
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
+
+    // Set it as the minimum selectable date
+    document.getElementById("needByDate").min = today;
 
 //////
 
