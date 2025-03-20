@@ -479,6 +479,8 @@ bothSides.addEventListener("click",function(){
 
             rightDecal.mesh = createDecal(leftDecal.url, rightMarker, new THREE.Vector3(leftDecal.width,leftDecal.height,0.15))
             rightDecal.url = leftDecal.url;
+            rightDecal.width = leftDecal.width;
+            rightDecal.height = leftDecal.height;
 
         }
 
@@ -486,6 +488,8 @@ bothSides.addEventListener("click",function(){
 
             leftDecal.mesh = createDecal(rightDecal.url, leftMarker, new THREE.Vector3(rightDecal.width,rightDecal.height,0.15))
             leftDecal.url = rightDecal.url;
+            leftDecal.width = rightDecal.width;
+            leftDecal.height = rightDecal.height;
         }
 }
 
