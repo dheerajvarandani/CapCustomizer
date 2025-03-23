@@ -262,7 +262,7 @@ input[type="file"] {
     border-bottom-left-radius: 1em!important;
   }
 
-#remove-left-logo, #remove-right-logo{
+#remove-left-logo, #remove-right-logo, #clear-left-text, #clear-right-text {
 
     background-color: transparent;
     color: white;
@@ -271,11 +271,22 @@ input[type="file"] {
     cursor: pointer;
 }
 
+#right-text-options-btn, #text-options-btn{
+
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+#add-text-dialog{
+    max-width: 200px;
+}
+
 #remove-left-logo:hover, #remove-right-logo:hover, .custom-file-upload:hover {
 
     background-color: rgb(255, 255, 255);
     color: black;
 }
+
 
 
 /* CHECK MARK ANIMATION BEGIN */

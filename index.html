@@ -106,9 +106,21 @@
     </div>
     </div>
 
+
+    <!-- TOGGLE BETWEEN LOGO AND TEXT-->
+    <div class="justify-content-center d-flex w-100 mb-3" >
+      <div class="input-group mb-1" style="width: max-content;">
+          <button id="logo-options-btn" class="btn btn-light">Logo</button>
+        <div class="input-group-append">
+          <button id="text-options-btn" class="btn btn-outline-light">Text</button>
+        </div>
+      </div>
+    </div>
+
+
     <!--VISIBILITY TOGGLE MENU-->   
     <div>         
-        <div id="visibility-toggle" class="border border-secondary rounded py-3 px-2 tint-bg text-white" >
+        <div id="upload-logo-dialog" class="border border-secondary rounded py-3 px-2 tint-bg text-white" >
         <h5 class="spany w-100 d-block lh-sm text-white hind-light justify-content-center d-flex">Upload Logo</h5>
         <span class="justify-content-center d-flex" style="font-size: x-small; text-align: center; color: lightgray;">PNG, JPG and GIF are supported. <br> Preferred format is PNG.</span>
         <div class="px-2 d-flex flex-column  shadow-lg" >
@@ -152,15 +164,120 @@
 
 
     </div>
-
     
-                <!-- Button to trigger modal -->
-                <button type="button" class="btn btn-primary my-2 w-100" data-bs-toggle="modal" data-bs-target="#capOrderModal">
-                  Submit
-              </button>
-              <a id="export" style="color:white; display: none;">Export</a>
+
 </div>
+
+
+
+
+<!--ADD TEXT MENU-->
+
+<div>         
+  <div id="add-text-dialog" class="border border-secondary rounded py-3 px-2 tint-bg text-white" style="display: none;">
+      <h5 class="spany w-100 d-block lh-sm text-white hind-light justify-content-center d-flex">Add Text</h5>
+
+      
+      <div class="justify-content-center d-flex w-100 mb-3" >
+        <div class="input-group mb-1" style="width: max-content;">
+            <button id="left-text-options-btn" class="btn btn-light">Left</button>
+          <div class="input-group-append">
+            <button id="right-text-options-btn" class="btn btn-outline-light">Right</button>
+          </div>
+        </div>
+      </div>
+
+        <div id="left-text-options">
+          <!-- Left Side Text Input -->
+          <div class="input-group mb-2">
+              <input type="text" id="left-text" class="form-control bg-transparent text-white" placeholder="Enter Left Text">
+              <div class="input-group-append">
+                  <span class="input-group-text" id="clear-left-text">x</span>
+              </div>
+          </div>
+
+          <!-- Font Selection -->
+          <div class="d-flex justify-content-between align-items-center mb-1">
+        <select id="left-text-font" class="form-select mb-2 mx-2 font-select bg-dark text-white">
+            <option class="font-select" value="Arial">Arial</option>
+            <option value="Verdana">Verdana</option>
+            <option value="Helvetica">Helvetica</option>
+            <option value="Courier New">Courier New</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Comic Sans MS">Comic Sans</option>
+        </select>
+        </div>
+
+          <!-- Text Size and Color -->
+        <div>
+          <div class="d-flex justify-content-center">
+            <img style="max-width: 25px;" src="./assets/resize.png" alt="Resize">
+            <input type="range" id="left-text-size" value="100" min="50" max="500" step="50">
+          </div>
+          <div class="d-flex my-1 justify-content-center">
+            <img style="max-width: 25px;" src="./assets/color.png" alt="Color">
+            <input type="color" id="left-text-color" style="height:25px; width:120px; margin-left:7px; align-self: center;"  value="#ffffff">
+            </div>
+        </div>
+      </div>
+
+
+          <!-- Right Side Text Input -->
+           
+      <div id="right-text-options" style="display: none;">
+          <div class="input-group mb-2">
+              <input type="text" id="right-text" class="form-control bg-transparent text-white" placeholder="Enter Right Text">
+              <div class="input-group-append">
+                  <span class="input-group-text" id="clear-right-text">x</span>
+              </div>
+          </div>
+
+          <!-- Font Selection -->
+          <div class="d-flex justify-content-between align-items-center mb-1">
+          <select id="right-text-font" class="form-select mb-2 mx-2 font-select bg-dark text-white">
+              <option value="Arial">Arial</option>
+              <option value="Verdana">Verdana</option>
+              <option value="Helvetica">Helvetica</option>
+              <option value="Courier New">Courier New</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Comic Sans MS">Comic Sans</option>
+          </select>
+          </div>
+
+
+          <!-- Text Size and Color -->
+          <div>
+            <div class="d-flex justify-content-center">
+              <img style="max-width: 25px;" src="./assets/resize.png" alt="Resize">
+              <input type="range" id="right-text-size" value="100" min="50" max="500" step="50">
+            </div>
+            <div class="d-flex my-1 justify-content-center">
+              <img style="max-width: 25px;" src="./assets/color.png" alt="Color">
+              <input type="color" id="right-text-color" style="height:25px; width:120px; margin-left:7px; align-self: center;"  value="#ffffff">
+              </div>
+          </div>
+
+        </div>
+      </div>
+
+  </div>
+
+                  <!-- Button to trigger modal -->
+                  <button type="button" class="btn btn-primary my-2 w-100" data-bs-toggle="modal" data-bs-target="#capOrderModal">
+                    Submit
+                </button>
+                <a id="export" style="color:white; display: none;">Export</a>
 </div>
+
+
+<!---->
+
+
+</div>
+
+
+
+
 
 <!--PLACE ORDER FORM-->
 

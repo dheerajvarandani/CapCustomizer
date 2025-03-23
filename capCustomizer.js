@@ -54,14 +54,16 @@ var leftDecal = {   mesh: null,
                     width: DEFAULT_SCALE,
                     height: DEFAULT_SCALE,
                     position: null,
-                    url: null
+                    url: null,
+                    text: ""
                 }
 
 var rightDecal = {   mesh: null,
                     width: DEFAULT_SCALE,
                     height: DEFAULT_SCALE,
                     position: null,
-                    url: null
+                    url: null,
+                    text: ""
                 };
 
 
@@ -271,18 +273,135 @@ function createDecal(texturePath,marker,scale){
     scene.add( decal );
     
 
-    return decal;
+    return decal;s
 
 
 
 }
 
 
+//TEXT LOGO//
+
+//dynamic text as a decal//
+function createTextTexture(text, color, font, size) {
+    const canvas = document.createElement('canvas');
+
+    var width = 1024;
+    var height = 512;
+    
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+
+    //ctx.clearRect(0, 0, width, height);
+
+    // Set background (optional)
+    ctx.fillStyle = 'rgba(0, 0, 0, 0)';  // Transparent background
+    ctx.fillRect(0, 0, width, height);
+
+    // Set text styles
+    ctx.fillStyle = color;
+    ctx.font = 'Bold ' + size + 'px ' + font;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    // Draw the text
+    ctx.fillText(text, width / 2, height / 2);
+
+    // Create a Three.js texture
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.flipY = false;
+    texture.needsUpdate = true;
+
+    return texture;
+}
+
+
+function createDecalFromText(text,color,font,size,marker,scale){
+
+    const decalTexture = createTextTexture(text,color,font,size);
+    
+    const decalGeometry =  new DecalGeometry( cap, marker.position, new THREE.Euler().setFromQuaternion(new THREE.Quaternion(marker.rotation.x,marker.rotation.y,marker.rotation.z)), scale );
+    const decalMaterial = new THREE.MeshBasicMaterial( { 
+        map:decalTexture,
+        transparent:true,
+        side: THREE.FrontSide,
+        depthTest:true,
+        depthWrite:false,
+        polygonOffset:true,
+        polygonOffsetFactor: -4 } );
+    const decal = new THREE.Mesh( decalGeometry, decalMaterial );
+    scene.add( decal );
+    
+
+    return decal;
+
+
+}
+
+
+var leftTextInput = document.getElementById("left-text");
+var leftColorInput = document.getElementById("left-text-color");
+var leftFontInput = document.getElementById("left-text-font");
+var leftSizeInput = document.getElementById("left-text-size");
+
+var rightTextInput = document.getElementById("right-text");
+var rightColorInput = document.getElementById("right-text-color");
+var rightFontInput = document.getElementById("right-text-font");
+var rightSizeInput = document.getElementById("right-text-size");
+
+leftTextInput.addEventListener("input", function(){
+    scene.remove(leftDecal.mesh)
+    leftFile = null;
+    leftDecal.url = null;
+    leftDecal.text = this.value;
+    leftDecal.mesh = createDecalFromText(this.value, leftColorInput.value, leftFontInput.value, leftSizeInput.value, leftMarker,new THREE.Vector3(0.2,0.2,0.15))
+});
+
+leftColorInput.addEventListener("input", function(){
+    scene.remove(leftDecal.mesh)
+    leftDecal.mesh = createDecalFromText(leftTextInput.value, this.value, leftFontInput.value, leftSizeInput.value, leftMarker,new THREE.Vector3(0.2,0.2,0.15))
+});
+
+leftFontInput.addEventListener("input", function(){
+    scene.remove(leftDecal.mesh)
+    leftDecal.mesh = createDecalFromText(leftTextInput.value, leftColorInput.value, this.value, leftSizeInput.value, leftMarker,new THREE.Vector3(0.2,0.2,0.15))
+});
+
+leftSizeInput.addEventListener("input", function(){
+    scene.remove(leftDecal.mesh)
+    leftDecal.mesh = createDecalFromText(leftTextInput.value, leftColorInput.value, leftFontInput.value, this.value, leftMarker,new THREE.Vector3(0.2,0.2,0.15))
+});
+
+rightTextInput.addEventListener("input", function(){
+    scene.remove(rightDecal.mesh)
+    rightFile = null;
+    rightDecal.url = null;
+    rightDecal.text = this.value;
+    rightDecal.mesh = createDecalFromText(this.value, rightColorInput.value, rightFontInput.value, rightSizeInput.value, rightMarker,new THREE.Vector3(0.2,0.2,0.15))
+});
+
+rightColorInput.addEventListener("input", function(){
+    scene.remove(rightDecal.mesh)
+    rightDecal.mesh = createDecalFromText(rightTextInput.value, this.value, rightFontInput.value, rightSizeInput.value, rightMarker,new THREE.Vector3(0.2,0.2,0.15))
+});
+
+rightFontInput.addEventListener("input", function(){
+    scene.remove(rightDecal.mesh)
+    rightDecal.mesh = createDecalFromText(rightTextInput.value, rightColorInput.value, this.value, rightSizeInput.value, rightMarker,new THREE.Vector3(0.2,0.2,0.15))
+});
+
+rightSizeInput.addEventListener("input", function(){
+    scene.remove(rightDecal.mesh)
+    rightDecal.mesh = createDecalFromText(rightTextInput.value, rightColorInput.value, rightFontInput.value, this.value, rightMarker,new THREE.Vector3(0.2,0.2,0.15))
+});
+
 
 // Logo Upload //
 
 function leftDecalUpload(file){    
 
+        leftDecal.text = "";
 
         scene.remove(leftDecal.mesh)
         leftDecal.url = URL.createObjectURL(file)
@@ -329,6 +448,8 @@ function leftDecalUpload(file){
 }
 
 function rightDecalUpload(file){
+
+    rightDecal.text = "";
       
 
     scene.remove(rightDecal.mesh)
@@ -374,6 +495,7 @@ function rightDecalUpload(file){
     rightFile = file;
 
 }
+///
 
 function dataURLtoFile(dataURL, filename) {
     const arr = dataURL.split(',');
@@ -535,6 +657,8 @@ function setCamera(position) {
 
 
 
+
+
 async function generateLeftLogoUrl(){
 
     var url = await uploadImageToDrive(leftFile);
@@ -650,13 +774,29 @@ document.getElementById("order-form").addEventListener("submit", async function 
         
     if(leftFile != null) {
         uploadPromises.push(generateLeftLogoUrl());
-        uploadPromises.push(generateLeftSSUrl());
     }
 
     if(rightFile != null) {
         uploadPromises.push(generateRightLogoUrl());
+    }
+
+    if(leftDecal.text != ""){
+        leftUrlField.value = leftDecal.text;
+    }
+
+    if(rightDecal.text != ""){
+        rightUrlField.value = rightDecal.text;
+    }
+
+    if(leftFile != null || leftDecal.text != "") {
+        uploadPromises.push(generateLeftSSUrl());
+    }
+
+    if(rightFile != null || rightDecal.text != "") {
         uploadPromises.push(generateRightSSUrl());
     }
+
+
 
     try {
         // Wait for all URL generation to finish
@@ -676,8 +816,8 @@ document.getElementById("order-form").addEventListener("submit", async function 
         $("#capOrderModal").modal("hide");
         
         this.reset(); // Reset the form
-        document.getElementById("submit-order-btn").disabled = false; // Disable the submit button to prevent multiple submissions
-        document.getElementById("submit-order-btn").innerHTML = "Submit Order"; // Change the button text to indicate submission
+        document.getElementById("submit-order-btn").disabled = false; // Re-enable the submit button
+        document.getElementById("submit-order-btn").innerHTML = "Submit Order"; // Reset the button text
 
     } catch (error) {
         console.error("Error:", error);
@@ -694,6 +834,69 @@ document.getElementById("order-form").addEventListener("submit", async function 
     document.getElementById("needByDate").min = today;
 
 //////
+
+
+
+// UI functionality to toggle between left and right side text divs //
+
+document.getElementById("left-text-options-btn").addEventListener("click", function () {
+    // Toggle button classes
+    this.classList.remove("btn-outline-light");
+    this.classList.add("btn-light");
+
+    document.getElementById("right-text-options-btn").classList.remove("btn-light");
+    document.getElementById("right-text-options-btn").classList.add("btn-outline-light");
+
+    // Toggle display styles
+    document.getElementById("left-text-options").style.display = "block";
+    document.getElementById("right-text-options").style.display = "none";
+});
+
+document.getElementById("right-text-options-btn").addEventListener("click", function () {
+    // Toggle button classes
+    this.classList.remove("btn-outline-light");
+    this.classList.add("btn-light");
+
+    document.getElementById("left-text-options-btn").classList.remove("btn-light");
+    document.getElementById("left-text-options-btn").classList.add("btn-outline-light");
+
+    // Toggle display styles
+    document.getElementById("right-text-options").style.display = "block";
+    document.getElementById("left-text-options").style.display = "none";
+});
+
+//
+
+
+// UI functionality to toggle between logo and text divs //
+
+document.getElementById("logo-options-btn").addEventListener("click", function () {
+    // Toggle button classes
+    this.classList.remove("btn-outline-light");
+    this.classList.add("btn-light");
+
+    document.getElementById("text-options-btn").classList.remove("btn-light");
+    document.getElementById("text-options-btn").classList.add("btn-outline-light");
+
+    // Toggle display styles
+    document.getElementById("upload-logo-dialog").style.display = "block";
+    document.getElementById("add-text-dialog").style.display = "none";
+});
+
+document.getElementById("text-options-btn").addEventListener("click", function () {
+    // Toggle button classes
+    this.classList.remove("btn-outline-light");
+    this.classList.add("btn-light");
+
+    document.getElementById("logo-options-btn").classList.remove("btn-light");
+    document.getElementById("logo-options-btn").classList.add("btn-outline-light");
+
+    // Toggle display styles
+    document.getElementById("add-text-dialog").style.display = "block";
+    document.getElementById("upload-logo-dialog").style.display = "none";
+});
+
+//
 
 document.addEventListener('keydown', function(event) {
     if (event.key === 'c' || event.key === 'C') {
