@@ -524,8 +524,10 @@ async function uploadImageToDrive(file) {
         formData.append("mimetype", file.type);
         formData.append("filename", file.name);
 
+        //
+
         try {
-            const response = await fetch("https://script.google.com/macros/s/AKfycbykFOx3aVd-aMyqX43PGYemaq_ljLOWszht9n_Dmbw0EDfcOdQzc9ftY6r0R6pW6j91ng/exec", {
+            const response = await fetch("https://script.google.com/macros/s/AKfycbwG-gy5io7rlarrSp3F5Hs2tRaxzyb6ounpnJkszXT6LyJIPfHaVsHOdh9HCVqaonRaEg/exec", {
                 method: "POST",
                 body: formData,
             });
